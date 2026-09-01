@@ -20,11 +20,27 @@ param(
     [string]$GitHubRepo = 'vscode-crew',
     [string]$Branch = 'main',
     [string]$Tag,
+    [ValidatePattern('^[A-Fa-f0-9]{64}$')]
+    [string]$Sha256,
     
     [switch]$Force
 )
 
 $ErrorActionPreference = 'Stop'
+$tempDir = $null
+
+trap {
+    if ($tempDir -and (Test-Path -LiteralPath $tempDir)) {
+        Remove-Item -LiteralPath $tempDir -Recurse -Force -ErrorAction SilentlyContinue
+    }
+    throw
+}
+
+function New-CrewTemporaryDirectory {
+    $path = Join-Path ([System.IO.Path]::GetTempPath()) ("vscode-crew-skill-" + [Guid]::NewGuid().ToString('N'))
+    New-Item -ItemType Directory -Path $path -Force | Out-Null
+    return $path
+}
 
 # Résoudre le skill
 if ($PSCmdlet.ParameterSetName -eq 'LocalPath') {
@@ -33,7 +49,9 @@ if ($PSCmdlet.ParameterSetName -eq 'LocalPath') {
         throw "Le skill doit être un dossier : $SkillPath"
     }
 } else {
-    # Mode GitHub : télécharger le skill
+    # SkillName désigne toujours une source distante. Cela évite qu'un appel
+    # avec -SkillName sans -From GitHub tente de résoudre un chemin vide.
+    $From = 'GitHub'
     Write-Host "Téléchargement du skill depuis GitHub..." -ForegroundColor Cyan
     
     $skillFileName = $SkillName
@@ -48,7 +66,7 @@ if ($PSCmdlet.ParameterSetName -eq 'LocalPath') {
         }
         
         # Créer un dossier temporaire
-        $tempDir = New-TemporaryDirectory -Name "vscode-crew-skill-temp"
+        $tempDir = New-CrewTemporaryDirectory
         $source = Join-Path $tempDir $skillFileName
         New-Item -ItemType Directory -Path $source | Out-Null
         
@@ -114,8 +132,9 @@ if ($PSCmdlet.ShouldProcess($destination, "Installer le skill $extractedSkillNam
 }
 
 # Nettoyer
-if ($From -eq 'GitHub' -and (Test-Path $tempDir)) {
-    Remove-Item -Recurse -Force $tempDir
+if ($From -eq 'GitHub' -and $tempDir -and (Test-Path -LiteralPath $tempDir)) {
+    Remove-Item -LiteralPath $tempDir -Recurse -Force
+    $tempDir = $null
 }
 
 if (-not $WhatIfPreference) {
@@ -124,5 +143,4 @@ if (-not $WhatIfPreference) {
     if ($Scope -eq 'Personal') {
         Write-Host "   Disponible dans tous les projets VS Code" -ForegroundColor Cyan
     }
-}
 }

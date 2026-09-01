@@ -38,7 +38,9 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/legalstartburkina-bit/
 .\install.ps1 -Workspace "C:\Mon-Projet" -From GitHub -Tag v1.0.0 -InitializeProtocol
 ```
 
-#### Installation des skills personnellement (réutilisables dans tous projets)
+#### Installation
+
+Les scripts d'installation sont validés par CI (analyse syntaxique PowerShell et tests Pester). Utilisez de préférence un tag versionné plutôt que la branche `main`. des skills personnellement (réutilisables dans tous projets)
 ```powershell
 # Chaque skill individuellement
 $repo = "https://github.com/legalstartburkina-bit/vscode-crew"

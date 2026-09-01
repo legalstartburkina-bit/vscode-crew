@@ -14,7 +14,7 @@ Une crew légère, utilisable dans VS Code avec les agents personnalisés et un 
 
 ## Installation dans un projet VS Code
 
-Depuis PowerShell, exécute :
+Depuis PowerShell 5.1 ou PowerShell 7 sur Windows, exécute :
 
 ```powershell
 .\install.ps1 -Workspace "C:\chemin\vers\ton-projet"
@@ -34,7 +34,7 @@ Dans VS Code, ouvre ensuite **Chat: Open Customizations**. Les cinq agents appar
 
 1. Dans VS Code, lance **Chat: Manage Language Models**.
 2. Choisis **Add Models**, puis **Custom Endpoint**.
-3. Utilise `deepseek.chatLanguageModels.example.json` comme modèle de configuration.
+3. Utilise [`deepseek.chatLanguageModels.example.json`](deepseek.chatLanguageModels.example.json) comme modèle de configuration ; ce fichier ne contient aucun secret.
 4. Saisis la clé API seulement dans la demande sécurisée de VS Code ; ne la mets jamais dans un fichier ou dans Git.
 5. Dans le chat, choisis le modèle DeepSeek, puis l'agent souhaité.
 
@@ -46,7 +46,7 @@ Commence avec Captain : « Analyse ce dépôt et propose un plan pour … ». Va
 
 ## Sécurité
 
-Le hook PowerShell bloque des commandes clairement dangereuses avant leur exécution. Il complète, mais ne remplace pas, ta validation humaine : lis toujours les commandes proposées, ne commite aucune clé API et évite `-Force` tant que tu n'as pas vérifié la cible.
+Le hook PowerShell bloque des commandes clairement dangereuses avant leur exécution. Les installateurs acceptent aussi `-Sha256` pour vérifier l’intégrité d’une archive ou d’un skill téléchargé. Ces protections complètent, mais ne remplacent pas, ta validation humaine : lis toujours les commandes proposées, ne commite aucune clé API et évite `-Force` tant que tu n'as pas vérifié la cible.
 
 ## Protocole de décision
 

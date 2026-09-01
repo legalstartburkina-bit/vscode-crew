@@ -17,6 +17,20 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+$tempDir = $null
+
+trap {
+    if ($tempDir -and (Test-Path -LiteralPath $tempDir)) {
+        Remove-Item -LiteralPath $tempDir -Recurse -Force -ErrorAction SilentlyContinue
+    }
+    throw
+}
+
+function New-CrewTemporaryDirectory {
+    $path = Join-Path ([System.IO.Path]::GetTempPath()) ("vscode-crew-" + [Guid]::NewGuid().ToString('N'))
+    New-Item -ItemType Directory -Path $path -Force | Out-Null
+    return $path
+}
 
 # Déterminer la source : locale ou GitHub
 if ($From -eq 'GitHub') {
@@ -32,7 +46,7 @@ if ($From -eq 'GitHub') {
     }
     
     # Créer un dossier temporaire
-    $tempDir = New-TemporaryDirectory -Name "vscode-crew-temp"
+    $tempDir = New-CrewTemporaryDirectory
     $zipPath = Join-Path $tempDir "repo.zip"
     
     try {
@@ -40,6 +54,13 @@ if ($From -eq 'GitHub') {
         Write-Host "Téléchargement en cours..."
         $ProgressPreference = 'SilentlyContinue'
         Invoke-WebRequest -Uri $releaseUrl -OutFile $zipPath -ErrorAction Stop
+        if ($Sha256) {
+            $actualHash = (Get-FileHash -LiteralPath $zipPath -Algorithm SHA256).Hash
+            if ($actualHash -ine $Sha256) {
+                throw "Le SHA-256 de l'archive ne correspond pas à -Sha256."
+            }
+            Write-Host "Intégrité SHA-256 vérifiée" -ForegroundColor Green
+        }
         
         # Décompresser
         Write-Host "Extraction en cours..."
@@ -62,14 +83,10 @@ if ($From -eq 'GitHub') {
 
 $target = (Resolve-Path -LiteralPath $Workspace).Path
 
-# Vérifier les destinations existantes
+# Les dossiers peuvent déjà exister dans un projet utilisateur. La copie
+# refuse les collisions de fichiers sans -Force, au lieu de refuser tout le
+# dossier parent.
 $items = @('.github/agents', '.github/skills', '.github/hooks', 'docs/crew')
-foreach ($item in $items) {
-    $destination = Join-Path $target $item
-    if ((Test-Path -LiteralPath $destination) -and -not $Force) {
-        throw "La destination existe déjà : $destination. Relance avec -Force après vérification."
-    }
-}
 
 # Initialiser le protocole (work-items, ADR, specs)
 if ($InitializeProtocol) {
@@ -94,15 +111,16 @@ foreach ($item in $items) {
     }
     
     if ($PSCmdlet.ShouldProcess($to, "Installer $item")) {
-        New-Item -ItemType Directory -Force -Path (Split-Path -Parent $to) | Out-Null
-        Copy-Item -LiteralPath $from -Destination $to -Recurse -Force:$Force
+        New-Item -ItemType Directory -Force -Path $to | Out-Null
+        Copy-Item -Path (Join-Path $from '*') -Destination $to -Recurse -Force:$Force
         Write-Host "✓ $item installé"
     }
 }
 
 # Nettoyer le dossier temporaire
-if ($From -eq 'GitHub' -and (Test-Path $tempDir)) {
-    Remove-Item -Recurse -Force $tempDir
+if ($From -eq 'GitHub' -and $tempDir -and (Test-Path -LiteralPath $tempDir)) {
+    Remove-Item -LiteralPath $tempDir -Recurse -Force
+    $tempDir = $null
 }
 
 if (-not $WhatIfPreference) {

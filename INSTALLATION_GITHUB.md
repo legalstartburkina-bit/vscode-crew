@@ -4,6 +4,8 @@ Le dépôt VS Code Crew est maintenant disponible sur GitHub : **https://github.
 
 ## 📥 Installation rapide (recommandée)
 
+Prérequis : Windows avec PowerShell 5.1 ou PowerShell 7, un workspace déjà créé et VS Code à jour. Le mode GitHub télécharge une archive du tag ou de la branche choisie ; pour une installation de production, préférez un tag immuable et vérifiez la provenance du dépôt avant exécution.
+
 ### 1️⃣ Installation globale (toutes les sessions VS Code)
 
 ```powershell
@@ -60,8 +62,8 @@ Invoke-WebRequest -Uri "$repo/install.ps1" -OutFile "install.ps1"
 # Mode GitHub (recommandé - télécharge automatiquement)
 .\install.ps1 -Workspace "C:\Projet" -From GitHub -Branch main -InitializeProtocol
 
-# Version spécifique
-.\install.ps1 -Workspace "C:\Projet" -From GitHub -Tag v1.0.0 -InitializeProtocol
+# Version spécifique avec contrôle d'intégrité optionnel
+.\install.ps1 -Workspace "C:\Projet" -From GitHub -Tag v1.0.0 -Sha256 "<SHA256_DE_L_ARCHIVE>" -InitializeProtocol
 
 # Forcer la réinstallation (attention : écrase les existants)
 .\install.ps1 -Workspace "C:\Projet" -From GitHub -Force
