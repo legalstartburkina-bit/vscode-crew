@@ -1,5 +1,6 @@
 # Secrets et credentials
 deepseek.chatLanguageModels.*.json
+!deepseek.chatLanguageModels.example.json
 *.secret
 .env
 .env.local

@@ -1,0 +1,7 @@
+{
+  "provider": "deepseek",
+  "endpoint": "https://api.deepseek.com",
+  "model": "deepseek-chat",
+  "apiKey": "SET_SECURELY_IN_VS_CODE",
+  "note": "Template only: replace the placeholder through VS Code's secure model configuration; never commit a real key."
+}
