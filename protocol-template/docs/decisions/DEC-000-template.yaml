@@ -1,0 +1,15 @@
+id: DEC-000
+status: proposed
+date: YYYY-MM-DD
+decision: ""
+context: []
+alternatives:
+  - option: ""
+    status: proposed
+    reason: ""
+rationale: []
+consequences: []
+affected_artifacts: []
+scope: ""
+authority: user
+supersedes: []

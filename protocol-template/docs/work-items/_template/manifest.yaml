@@ -1,0 +1,23 @@
+id: WI-AAAA-NNN-slug
+title: ""
+status: intent_captured
+owner: Captain
+objective: ""
+created_at: YYYY-MM-DD
+updated_at: YYYY-MM-DD
+
+skills:
+  completed: []
+  pending: []
+
+artifacts: []
+# Exemple :
+# - path: docs/work-items/WI-AAAA-NNN-slug/analysis.md
+#   type: analysis
+#   producer: repository-analysis
+
+decisions: []
+validation:
+  required: []
+  executed: []
+  status: pending

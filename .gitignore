@@ -1,0 +1,39 @@
+# Secrets et credentials
+deepseek.chatLanguageModels.*.json
+*.secret
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+
+# Artifacts utilisateurs (à créer lors de la première installation)
+docs/work-items/*/artifacts/
+.crew/*.secret
+.crew/context.local.md
+.crew/project-state.local.md
+
+# Node/npm
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# VS Code
+.vscode/**/settings.local.json
+.vscode/**/launch.local.json
+
+# IDE
+.vs/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*.cache

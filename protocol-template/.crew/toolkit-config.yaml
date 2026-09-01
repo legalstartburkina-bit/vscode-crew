@@ -1,0 +1,41 @@
+schema_version: 1
+
+project:
+  type: auto # auto | saas | mobile | hybrid
+  name: ""
+  owners: []
+
+saas:
+  backend: "" # ex. NestJS, Django, Laravel
+  frontend: "" # ex. Next.js, React
+  database: "" # ex. PostgreSQL
+  tenancy_model: undecided # undecided | shared-row | shared-schema | isolated-database
+  authentication: "" # ex. Auth0, Supabase, JWT interne
+  payment_provider: ""
+  environments: [development, staging, production]
+
+mobile:
+  framework: "" # ex. React Native, Flutter, SwiftUI
+  platforms: [] # android, ios
+  minimum_os_versions: {}
+  offline_mode: undecided # undecided | supported | unsupported
+  secure_storage: ""
+  distribution: [] # internal, google-play, app-store
+
+verification:
+  lint: ""
+  unit_tests: ""
+  integration_tests: ""
+  e2e_tests: ""
+  mobile_build_android: ""
+  mobile_build_ios: ""
+
+delivery:
+  production_approval: required
+  rollback_owner: ""
+  monitoring_dashboard: ""
+
+security:
+  data_classification: ""
+  incident_contact: ""
+  secrets_location: "" # emplacement seulement, jamais une valeur secrète

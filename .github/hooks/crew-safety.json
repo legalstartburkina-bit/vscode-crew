@@ -1,0 +1,11 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "type": "command",
+        "windows": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}\\.github\\hooks\\scripts\\crew-safety.ps1\"",
+        "timeout": 15
+      }
+    ]
+  }
+}
